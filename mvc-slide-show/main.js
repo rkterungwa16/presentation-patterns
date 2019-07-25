@@ -1,10 +1,13 @@
 
 define(function(require, exports, module) {
-    const Slide = require("./slides");
-    const slide = new Slide();
-    slide.renderedSlides();
-    slide.dots();
-    slide.showSlides(1);
-    slide.next();
-    slide.prev();
+    const View = require("./view");
+    const Controller = require("./controller");
+    const Model = require("./model");
+    const Binder = require("./binder");
+    const view = new View(Model, Controller, Binder);
+    view.slideImages();
+    view.dots();
+    view.slides(1);
+    view.next();
+    view.prev();
 });
