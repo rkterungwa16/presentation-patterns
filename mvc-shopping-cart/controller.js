@@ -4,6 +4,10 @@ define(function (require, exports, module) {
         constructor(model) {
             this.model = model;
         }
+
+        setCurrentImage (currentImageId, view) {
+            view.productImage(currentImageId)
+        }
     }
 
     module.exports = Controllers;

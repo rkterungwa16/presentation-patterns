@@ -15,18 +15,16 @@ define(function (require, exports, module) {
             this.controller = new Controller(this.model);
         }
 
-        // <div class="column">
-        //         <img class="demo cursor" src="./assets/images/nike_women_sock_dart_br_nsw_black.jpg" style="width:100%" onclick="currentSlide(1)"
-        //             alt="The Woods">
-        //     </div>
-
-        [createImageColumn] = (imageInfo) => {
+        [createImageColumn] (imageInfo) {
             const imageColumn = document.createElement("div");
             imageColumn.className = "column";
-
-            const productImage = this[createProductImage](imageInfo.url);
-
-            imageColumn.appendChild(productImage);
+            
+            const currentImage = this[createProductImage](imageInfo.url);
+            currentImage.onclick = () => {
+                this.model.currentExpandedImageId = imageInfo.id;
+                this.currentImage(imageInfo.url);
+            }
+            imageColumn.appendChild(currentImage);
 
             return imageColumn;
         }
@@ -41,7 +39,6 @@ define(function (require, exports, module) {
             });
 
             return rowOfImages;
-            
         }
 
         rows () {
@@ -62,7 +59,6 @@ define(function (require, exports, module) {
         [createProductImageContainer] = (imageInfo) => {
             const productImageContainer = document.createElement("div");
             productImageContainer.className = "product-img__container";
-            productImageContainer.style.display = imageInfo.isOpen ? "block" : "none";
 
             const productImage = this[createProductImage](imageInfo.url, "product-img");
             productImageContainer.appendChild(productImage);
@@ -70,15 +66,22 @@ define(function (require, exports, module) {
             return productImageContainer;
         }
 
-        productImage() {
-            this.model.images.forEach((image) => {
-                const container = document.getElementById("root");
+        productImage = (currentExpandedImageId = 1) => {
+            const container = document.getElementById("root");
                 
-                const productImageContainer = this[createProductImageContainer](image);
-                
-                container.appendChild(productImageContainer);
+            const currentImage = this.model.images.filter((image) => {
+                return image.id === currentExpandedImageId
             });
 
+            const productImageContainer = this[createProductImageContainer](currentImage[0]);
+                
+            container.appendChild(productImageContainer);
+
+        }
+
+        currentImage = (imageUrl) => {
+            const currentImage = document.getElementsByClassName("product-img__container");
+            currentImage[0].children[0].src = imageUrl;
         }
 
         [createLeftArrow] = () => {
