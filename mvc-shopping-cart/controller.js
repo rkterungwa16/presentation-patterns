@@ -1,9 +1,8 @@
 
 define(function (require, exports, module) {
     class Controllers {
-        constructor(model, binder) {
+        constructor(model) {
             this.model = model;
-            this.binder = binder;
         }
     }
 

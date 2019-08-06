@@ -24,7 +24,6 @@ define(function (require, exports, module) {
         }
 
         slideImages() {
-
             this.model.images.forEach((image, index) => {
                 let slideImageContainer = document.getElementById("slide-image-container");
                 let slide = document.createElement("div");
