@@ -18,6 +18,7 @@ define(function (require, exports, module) {
         [createImageColumn] (imageInfo) {
             const imageColumn = document.createElement("div");
             imageColumn.className = "column";
+            imageColumn.id = `img-col-${imageInfo.id}`
             
             const currentImage = this[createProductImage](imageInfo.url);
             currentImage.onclick = () => {
@@ -33,7 +34,15 @@ define(function (require, exports, module) {
             const rowOfImages = document.createElement("div");
             rowOfImages.className = "row";
 
-            this.model.images.forEach((image) => {
+            const {
+                currentBrandId
+            } = this.model;
+
+            const currentBrand = this.model.brands.find((brand) => {
+                return brand.id === currentBrandId;
+            });
+
+            currentBrand.images.forEach((image) => {
                 const productImageColumn = this[createImageColumn](image);
                 rowOfImages.appendChild(productImageColumn);
             });
@@ -59,21 +68,58 @@ define(function (require, exports, module) {
         [createProductImageContainer] = (imageInfo) => {
             const productImageContainer = document.createElement("div");
             productImageContainer.className = "product-img__container";
-
             const productImage = this[createProductImage](imageInfo.url, "product-img");
             productImageContainer.appendChild(productImage);
 
             return productImageContainer;
         }
 
+        nextBrand = (currentExpandedImageId) => {
+            const {
+                currentBrandId
+            } = this.model;
+
+            if (currentBrandId === this.model.brands.length) {
+                this.model.currentBrandId = 1
+            }
+
+            if (currentBrandId < 1) {
+                this.model.currentBrandId = this.model.brands.length
+            }
+
+            const currentBrand = this.model.brands.find((brand) => {
+                return brand.id === currentBrandId;
+            });
+            const currentImage = currentBrand.images.find((image) => {
+                return image.id === currentBrandId
+            });
+
+            const currentImageContainer = document.getElementsByClassName("product-img__container");
+            currentImageContainer[0].children[0].src = currentImage.url;
+
+            currentBrand.images.forEach((image) => {
+                const imgColumn = document.getElementById(`img-col-${image.id}`);
+                imgColumn.firstChild.src = image.url;
+                imgColumn.onclick = () => {
+                    this.currentImage(image.url);
+                }
+            })
+        }
+
         productImage = (currentExpandedImageId = 1) => {
+            const {
+                currentBrandId
+            } = this.model;
             const container = document.getElementById("root");
-                
-            const currentImage = this.model.images.filter((image) => {
+
+            const currentBrand = this.model.brands.find((brand) => {
+                return brand.id === currentBrandId;
+            });
+            const currentImage = currentBrand.images.find((image) => {
                 return image.id === currentExpandedImageId
             });
 
-            const productImageContainer = this[createProductImageContainer](currentImage[0]);
+            const productImageContainer = this[createProductImageContainer](currentImage);
                 
             container.appendChild(productImageContainer);
 
@@ -90,6 +136,9 @@ define(function (require, exports, module) {
 
             const leftArrowIcon = this[createLeftArrowIcon]();
 
+            leftArrow.onclick = () => {
+                this.controller.setNextBrand(1, this);
+            }
             leftArrow.appendChild(leftArrowIcon);
             return leftArrow;
         }
@@ -105,7 +154,9 @@ define(function (require, exports, module) {
             rightArrow.className = "next";
 
             const rightArrowIcon = this[createRightArrowIcon]();
-
+            rightArrow.onclick = () => {
+                this.controller.setNextBrand(1, this);
+            }
             rightArrow.appendChild(rightArrowIcon);
             return rightArrow;
         }
