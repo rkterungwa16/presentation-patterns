@@ -80,7 +80,7 @@ define(function (require, exports, module) {
             } = this.model;
 
             if (currentBrandId === this.model.brands.length) {
-                this.model.currentBrandId = 1
+                this.model.currentBrandId = 0
             }
 
             if (currentBrandId < 1) {
@@ -90,12 +90,12 @@ define(function (require, exports, module) {
             const currentBrand = this.model.brands.find((brand) => {
                 return brand.id === currentBrandId;
             });
-            const currentImage = currentBrand.images.find((image) => {
-                return image.id === currentBrandId
-            });
+            // const currentImage = currentBrand.images.find((image) => {
+            //     return image.id === currentBrandId
+            // });
 
             const currentImageContainer = document.getElementsByClassName("product-img__container");
-            currentImageContainer[0].children[0].src = currentImage.url;
+            currentImageContainer[0].children[0].src = currentBrand.images[0].url;
 
             currentBrand.images.forEach((image) => {
                 const imgColumn = document.getElementById(`img-col-${image.id}`);
